@@ -6,8 +6,9 @@ import express from "express";
 import cors from "cors";
 import compression from "compression";
 import { logger } from "./utils/logger";
+import { userRouter } from "./users/users.router";
 
-const app = express();
+export const app = express();
 const { PORT: port } = process.env;
 
 // compress all api responses
@@ -22,3 +23,5 @@ app.use(express.json());
 app.listen(port, () => {
   logger.info(`server started 🚀 on port ${port}`);
 });
+
+app.use("/users", userRouter);
