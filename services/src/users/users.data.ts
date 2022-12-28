@@ -1,7 +1,7 @@
-const db: any = {};
+const user: any = {};
 
-db.createUser = () => {};
-db.getUser = () => {};
-db.updateUser = () => {};
+user.create = () => {};
+user.get = () => {};
+user.update = () => {};
 
-export default db;
+export default user;

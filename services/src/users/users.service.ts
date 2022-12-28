@@ -63,7 +63,7 @@ export const createUser = async (
   user.password = hashedPassword;
 
   // #TODO: store the user details in database
-  db.createUser();
+  const a = db.user.create();
 
   // generate the tokens
   const accessToken = generateAccessToken(user);

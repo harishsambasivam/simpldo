@@ -1,5 +1,10 @@
 import pino from "pino";
 
-export const logger = pino({
-  level: process.env.LOG_LEVEL,
-});
+export let logger: any;
+
+export const initLogger = function (logLevel: string) {
+  logger = pino({
+    level: logLevel,
+  });
+  return logger;
+};
