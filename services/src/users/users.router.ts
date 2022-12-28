@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
-import { createUser, validPassword } from "./users";
+import { createUser, validPassword } from "./users.service";
+import db from "./users.data";
 
 export const userRouter = Router();
 
@@ -44,7 +45,7 @@ userRouter.post("/signup", async (req: Request, res: Response) => {
     });
   }
 
-  const response = await createUser(user);
+  const response = await createUser(user, db);
   return res.status(200).send({
     status: "success",
     message: response,

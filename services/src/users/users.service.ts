@@ -51,12 +51,19 @@ export const generateRefreshToken = (user: User) => {
   return refreshToken;
 };
 
-export const createUser = async (user: User) => {
+export const createUser = async (
+  user: User,
+  db: any
+): Promise<{
+  accessToken: string;
+  refreshToken: string;
+}> => {
   const { password } = user;
   const hashedPassword = await hashPassword(password, saltRounds);
   user.password = hashedPassword;
 
   // #TODO: store the user details in database
+  db.createUser();
 
   // generate the tokens
   const accessToken = generateAccessToken(user);
