@@ -1,20 +1,15 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { User } from "./users.router";
-import { jest } from "@jest/globals";
-
-const createUser = jest.fn(function (user, db) {
-  return {
-    accessToken: "",
-    refreshToken: "",
-  };
-});
+import { createUser } from "./users.service";
 
 const db = {
-  createUser,
+  user: {
+    create: vi.fn(() => {}),
+  },
 };
 
 describe("create user", () => {
-  createUser.mockReset();
+  // mockCreateUser.mockReset();
   it("should return tokens when creating an user", async () => {
     const user: User = {
       username: "arooon",
@@ -25,5 +20,6 @@ describe("create user", () => {
     expect(tokens).keys(["accessToken", "refreshToken"]);
     expect(tokens.accessToken).lengthOf.greaterThan(0);
     expect(tokens.refreshToken).lengthOf.greaterThan(0);
+    // expect(mockCreateUser.mock.calls.length).toBe(1);
   });
 });

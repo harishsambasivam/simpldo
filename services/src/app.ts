@@ -5,10 +5,11 @@ dotenv.config();
 import express from "express";
 import cors from "cors";
 import compression from "compression";
-import { logger } from "./utils/logger";
-import { userRouter } from "./users/users.router";
+import { initLogger } from "./utils/logger";
+import { userRouterFactory } from "./users/users.router";
 
-export default function (dbUri: string) {
+export default function (db: any, logLevel?: string) {
+  const logger = initLogger(logLevel || (process.env.LOG_LEVEL as string));
   const app = express();
   const { PORT: port } = process.env;
 
@@ -25,6 +26,6 @@ export default function (dbUri: string) {
     logger.info(`server started 🚀 on port ${port}`);
   });
 
-  app.use("/users", userRouter);
+  app.use("/users", userRouterFactory(db));
   return app;
 }

@@ -1,6 +1,15 @@
 import request from "supertest";
-import server from "../server";
+import app from "../app";
 import { describe, it, expect } from "vitest";
+
+const db = {
+  user: {
+    create: () => {},
+    update: () => {},
+  },
+};
+
+const server = app(db, "silent");
 
 describe("create users /users/signup", () => {
   it("should create an user", async () => {
