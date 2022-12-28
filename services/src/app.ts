@@ -11,10 +11,10 @@ import { initLogger } from "./utils/logger";
 import { userRouterFactory } from "./users/users.router";
 import { APIError } from "../../lib/errors";
 
-export default function (db: any, logLevel?: string) {
+export default function (port: number, db: any, logLevel?: string) {
   const logger = initLogger(logLevel || (process.env.LOG_LEVEL as string));
   const app = express();
-  const { PORT: port } = process.env;
+  port = port || parseInt(process.env.PORT as string);
 
   // compress all api responses
   app.use(compression());

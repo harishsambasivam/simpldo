@@ -1,7 +1,6 @@
 import { Router, Request, Response } from "express";
 import { createUser, validPassword } from "./users.service";
 import { APIError } from "../../../lib/errors";
-import createError from "http-errors";
 
 export type User = {
   username: string;

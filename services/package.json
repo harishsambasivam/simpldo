@@ -2,10 +2,9 @@
   "name": "services",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
-  "type": "module",
+  "main": "server.js",
   "scripts": {
-    "start": "nodemon --watch 'src/**' --ext 'ts,json' --ignore 'src/**/*.test.ts' --exec 'ts-node src/app.ts'",
+    "start": "nodemon --watch 'src/**' --ext 'ts,json' --ignore 'src/**/*.test.ts' --exec 'ts-node src/server.ts'",
     "test": "vitest --watch --reporter=verbose"
   },
   "keywords": [],

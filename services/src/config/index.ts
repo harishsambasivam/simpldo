@@ -9,6 +9,8 @@ const config = {
   saltRounds: 10,
   refreshTokenTtl: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 15, // 30 days
   accessTokenTtl: Math.floor(Date.now() / 1000) + 60 * 60 * 1, // 1 hour
+  mongoUserName: process.env.MONGO_USER as string,
+  mongoPassword: process.env.MONGO_PASSWORD as string,
 };
 
 export default config;

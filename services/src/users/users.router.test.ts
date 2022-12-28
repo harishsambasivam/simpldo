@@ -1,15 +1,33 @@
 import request from "supertest";
 import app from "../app";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 
-const db = {
-  user: {
-    create: () => {},
-    update: () => {},
+// application users
+const users: any = {
+  arun: {
+    username: "arun",
+    email: "arooon@bmail.com",
+    _id: "63ac34769e3cf10a54c3d851",
+    createdAt: "2022-12-28T12:20:06.614Z",
+    updatedAt: "2022-12-28T12:20:06.614Z",
   },
 };
 
-const server = app(db, "silent");
+// mock function for user model
+const db = {
+  user: {
+    create: vi.fn(() => ({
+      username: "arooon",
+      email: "arooon@bmail.com",
+      _id: "63ac34769e3cf10a54c3d851",
+      createdAt: "2022-12-28T12:20:06.614Z",
+      updatedAt: "2022-12-28T12:20:06.614Z",
+    })),
+    getByUserName: vi.fn((username) => users[username]),
+  },
+};
+
+const server = app(4500, db, "silent");
 
 describe("create users /users/signup", () => {
   it("should create an user", async () => {

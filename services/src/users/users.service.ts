@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import config from "../config";
 import { User } from "./users.router";
+import { APIError } from "../../../lib/errors";
 
 const { saltRounds, secret, accessTokenTtl, refreshTokenTtl } = config;
 
@@ -58,16 +59,21 @@ export const createUser = async (
   accessToken: string;
   refreshToken: string;
 }> => {
-  const { password } = user;
+  const { username, password } = user;
   const hashedPassword = await hashPassword(password, saltRounds);
   user.password = hashedPassword;
 
-  // #TODO: store the user details in database
-  const a = db.user.create();
+  const result = await db.user.getByUserName(username);
+
+  if (result?._id) throw new APIError("user already exists", "u-3");
+
+  const createdUser = await db.user.create(user);
+  delete createdUser.password;
+  delete createdUser.__v;
 
   // generate the tokens
-  const accessToken = generateAccessToken(user);
-  const refreshToken = generateRefreshToken(user);
+  const accessToken = generateAccessToken(createdUser);
+  const refreshToken = generateRefreshToken(createdUser);
 
   return {
     accessToken,
