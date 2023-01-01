@@ -16,7 +16,7 @@ const users: any = {
 // mock function for user model
 const db = {
   user: {
-    create: vi.fn(() => ({
+    createOne: vi.fn(() => ({
       username: "arooon",
       email: "arooon@bmail.com",
       _id: "63ac34769e3cf10a54c3d851",
@@ -24,12 +24,15 @@ const db = {
       updatedAt: "2022-12-28T12:20:06.614Z",
     })),
     getByUserName: vi.fn((username) => users[username]),
+    updateOne: vi.fn((username: string, data: any) => ({
+      ...data,
+    })),
   },
 };
 
 const server = app(4500, db, "silent");
 
-describe("create users /users/signup", () => {
+describe("create users /users", () => {
   it("should create an user", async () => {
     const payload = {
       username: "arooon",
@@ -37,15 +40,15 @@ describe("create users /users/signup", () => {
       email: "arun@bmail.com",
     };
 
-    const { body } = await request(server)
-      .post("/users/signup")
+    const { body: response } = await request(server)
+      .post("/users")
       .send(payload)
       .expect(200)
       .expect("Content-Type", /json/);
 
-    expect(body.status).toEqual("success");
-    expect(body.message.accessToken).lengthOf.greaterThan(0);
-    expect(body.message.refreshToken).lengthOf.greaterThan(0);
+    expect(response.status).toEqual("success");
+    expect(response.body.accessToken).lengthOf.greaterThan(0);
+    expect(response.body.refreshToken).lengthOf.greaterThan(0);
   });
 
   it("should throw missing username error", async () => {
@@ -54,7 +57,7 @@ describe("create users /users/signup", () => {
       email: "arun@bmail.com",
     };
     const { body } = await request(server)
-      .post("/users/signup")
+      .post("/users")
       .send(payload)
       .expect(200)
       .expect("Content-Type", /json/);
@@ -68,7 +71,7 @@ describe("create users /users/signup", () => {
       username: "arun",
     };
     const { body } = await request(server)
-      .post("/users/signup")
+      .post("/users")
       .send(payload)
       .expect(200)
       .expect("Content-Type", /json/);
@@ -83,7 +86,7 @@ describe("create users /users/signup", () => {
       email: "arun@bmail.com",
     };
     const { body } = await request(server)
-      .post("/users/signup")
+      .post("/users")
       .send(payload)
       .expect(200)
       .expect("Content-Type", /json/);
@@ -98,17 +101,22 @@ describe("create users /users/signup", () => {
       username: "arooon",
       password: "Football@321",
     };
-    const { body } = await request(server)
-      .post("/users/signup")
+    const { body: response } = await request(server)
+      .post("/users")
       .send(payload)
       .expect(200)
       .expect("Content-Type", /json/);
-    expect(body.status).toEqual("success");
-    expect(body.message.accessToken).lengthOf.greaterThan(0);
-    expect(body.message.refreshToken).lengthOf.greaterThan(0);
+    expect(response.status).toEqual("success");
+    expect(response.body.accessToken).lengthOf.greaterThan(0);
+    expect(response.body.refreshToken).lengthOf.greaterThan(0);
   });
 });
 
+describe("update users PUT /users", () => {
+  it("should update the user with new data", async () => {
+    await request(server).put("/users").expect(200);
+  });
+});
 //   it("should allow user to login: /users/login", async () => {
 //     await request(app).post("/users/login").expect(200);
 //   });

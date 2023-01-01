@@ -4,7 +4,7 @@ import createError, { HttpError } from "http-errors";
 
 dotenv.config();
 
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import compression from "compression";
 import { initLogger } from "./utils/logger";
@@ -27,6 +27,13 @@ export default function (port: number, db: any, logLevel?: string) {
 
   app.listen(port, () => {
     logger.info(`server started 🚀 on port ${port}`);
+  });
+
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    req.user = {
+      username: "user2",
+    };
+    next();
   });
 
   app.use("/users", userRouterFactory(db));
@@ -62,7 +69,7 @@ export default function (port: number, db: any, logLevel?: string) {
       res.status(statusCode).json({
         status: "error",
         code: errorCode,
-        message: err.message,
+        body: err.message,
       });
     }
   );

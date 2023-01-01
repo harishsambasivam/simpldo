@@ -1,16 +1,11 @@
 import { Router, Request, Response } from "express";
-import { createUser, validPassword } from "./users.service";
+import { createUser, updateUser, validPassword } from "./users.service";
 import { APIError } from "../../../lib/errors";
-
-export type User = {
-  username: string;
-  password: string;
-  email?: string;
-};
+import { User } from "../../../lib/types";
 
 export function userRouterFactory(db: any) {
   const userRouter = Router();
-  userRouter.post("/signup", async (req: Request, res: Response, next: any) => {
+  userRouter.post("/", async (req: Request, res: Response, next: any) => {
     try {
       const { username, password, email }: User = req.body;
       const user: User = {
@@ -23,7 +18,7 @@ export function userRouterFactory(db: any) {
       if (!username) {
         return res.status(200).send({
           status: "error",
-          data: {
+          body: {
             message: "missing mandatory field username",
           },
         });
@@ -37,11 +32,31 @@ export function userRouterFactory(db: any) {
           "u-2"
         );
 
-      const response = await createUser(user, db);
+      const response = await createUser(db, user);
       return res.status(200).send({
         status: "success",
-        message: response,
+        body: response,
       });
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  userRouter.put("/", async (req, res, next) => {
+    try {
+      const { email }: User = req.body;
+      const { username } = req.user;
+      const user: any = {
+        email,
+      };
+      const response = await updateUser(db, username, user);
+      console.log(response);
+      if (response) {
+        res.status(200).json({
+          status: "success",
+          body: response,
+        });
+      }
     } catch (err) {
       next(err);
     }

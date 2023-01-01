@@ -3,8 +3,8 @@ import passwordValidator from "password-validator";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import config from "../config";
-import { User } from "./users.router";
 import { APIError } from "../../../lib/errors";
+import { User } from "../../../lib/types";
 
 const { saltRounds, secret, accessTokenTtl, refreshTokenTtl } = config;
 
@@ -53,8 +53,8 @@ export const generateRefreshToken = (user: User) => {
 };
 
 export const createUser = async (
-  user: User,
-  db: any
+  db: any,
+  user: User
 ): Promise<{
   accessToken: string;
   refreshToken: string;
@@ -67,7 +67,7 @@ export const createUser = async (
 
   if (result?._id) throw new APIError("user already exists", "u-3");
 
-  const createdUser = await db.user.create(user);
+  const createdUser = await db.user.createOne(user);
   delete createdUser.password;
   delete createdUser.__v;
 
@@ -79,4 +79,9 @@ export const createUser = async (
     accessToken,
     refreshToken,
   };
+};
+
+export const updateUser = async (db: any, username: string, userData: User) => {
+  const result = await db.user.updateOne(username, userData);
+  return result;
 };
